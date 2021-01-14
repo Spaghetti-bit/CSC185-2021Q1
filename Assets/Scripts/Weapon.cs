@@ -4,8 +4,13 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    [SerializeField] GameObject _projectile;
 
+    public float fireRate = 0.1f;
+    
+    int ammo = 100;
+    float fireTimer = 0;
+
+    [SerializeField] GameObject _projectile;
     // Start is called before the first frame update
     void Start()
     {
@@ -15,14 +20,35 @@ public class Weapon : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Ray point = Camera.main.ScreenPointToRay(Input.mousePosition);
+        fireTimer += Time.deltaTime;
 
-            GameObject go = Instantiate(_projectile, transform.position, Quaternion.identity);
-            go.GetComponent<Projectile>()?.Fire(point.direction);
+
+        //if (Input.GetMouseButtonDown(0))
+        //{
+        //    Ray point = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            
+        //}
+
+    }
+
+    public bool fire(Vector3 position, Vector3 direction)
+    {
+        if(fireTimer >= fireRate && ammo > 0)
+        {
+            fireTimer = 0;
+
+            GameObject go = Instantiate(_projectile, position, Quaternion.identity);
+            go.GetComponent<Projectile>()?.Fire(direction);
             Destroy(go, 10);
+
+            ammo -= 1;
+
+            Debug.Log($"Ammo left: {ammo}");
+
+            return true;
         }
 
+        return false;
     }
 }
